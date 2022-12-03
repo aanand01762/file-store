@@ -1,12 +1,24 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/aanand01762/file-store/pkg/libs"
 )
+
+type Error struct {
+	Error string `json:"Error"`
+}
+
+func JSONError(w http.ResponseWriter, err interface{}, code int) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(err)
+}
 
 func AddFile(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseMultipartForm(200000) // grab the multipart form
@@ -34,19 +46,26 @@ func AddFile(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, err)
 			return
 		}
+
 		hash := libs.HashFileContent(byteContainer)
-		fmt.Fprintf(w, hash+"\n")
+		isExist, inMemFilename := libs.CheckIfFileExists(file.Filename, hash)
 
-		filename := "./store-files/" + file.Filename
-		libs.WriteToStore(filename, byteContainer, w)
-
-		fmt.Fprintf(w, "Files uploaded successfully : ")
-		fmt.Fprintf(w, file.Filename+"\n")
+		if !isExist {
+			libs.WriteToStore(file.Filename, hash, byteContainer, w)
+			fmt.Fprintf(w, "Files uploaded successfully : ")
+			fmt.Fprintf(w, file.Filename+"\n")
+		} else {
+			err := Error{
+				"file: '" + inMemFilename + "' with same content aleady exists"}
+			JSONError(w, err, 500)
+		}
 
 	}
 }
 
 /*
+
+
 func DeleteFile(w http.ResponseWriter, r *http.Request) {
 
 
