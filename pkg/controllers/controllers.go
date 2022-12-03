@@ -13,6 +13,10 @@ type Error struct {
 	Error string `json:"Error"`
 }
 
+/*type fname struct {
+	name string `json:"filename"`
+}*/
+
 func JSONError(w http.ResponseWriter, err interface{}, code int) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
@@ -63,16 +67,31 @@ func AddFile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-/*
+func UpdateFile(w http.ResponseWriter, r *http.Request) {
+	file, header, err := r.FormFile("file")
+	if err != nil {
+		fmt.Fprintln(w, err)
+		return
+	}
 
+	defer file.Close()
+	byteContainer, err := ioutil.ReadAll(file)
+	if err != nil {
+		fmt.Fprintln(w, err)
+		return
+	}
 
-func DeleteFile(w http.ResponseWriter, r *http.Request) {
-
-
+	hash := libs.HashFileContent(byteContainer)
+	libs.ReplaceInStore(header.Filename, hash, byteContainer, w)
 }
 
-func UpdateFile(w http.ResponseWriter, r *http.Request) {
+/*
+func DeleteFile(w http.ResponseWriter, r *http.Request) {
+	filename := &fname{}
+	utils.ParseBody(r, filename)
+	name := (*filename).name
 
+	isExist, _ := libs.CheckIfFileExists(name, "")
 	}
 
 

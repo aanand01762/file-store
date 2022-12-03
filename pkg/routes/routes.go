@@ -10,6 +10,7 @@ var RegisterFileStoreRoutes = func(router *mux.Router) {
 
 	//Define the routes for api calls
 	router.HandleFunc("/add", controllers.AddFile).Methods("POST")
+	router.HandleFunc("/store/update", controllers.UpdateFile).Methods("PUT")
 	//router.HandleFunc("/store/{id}", controllers.DeleteFile).Methods("DELETE")
 
 	/*
