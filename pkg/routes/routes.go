@@ -1,18 +1,19 @@
 package routes
 
 import (
-	"github.com/aanand01762/file-store/pkg/controllers"
-
 	"github.com/gorilla/mux"
+
+	"github.com/aanand01762/file-store/pkg/controllers"
 )
 
 var RegisterFileStoreRoutes = func(router *mux.Router) {
 
 	//Define the routes for api calls
 	router.HandleFunc("/add", controllers.AddFile).Methods("POST")
+	//router.HandleFunc("/store/{id}", controllers.DeleteFile).Methods("DELETE")
 
 	/*
-			router.HandleFunc("/store/{id}", controllers.DeleteFile).Methods("DELETE")
+
 
 			//should update contents of file.txt in
 			//server with the local file.txt or create a new file.txt in server if it is

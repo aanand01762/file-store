@@ -16,7 +16,6 @@ func main() {
 	routes.RegisterFileStoreRoutes(r)
 	fileserver := http.FileServer(http.Dir("./store-files"))
 	r.PathPrefix("/").Handler(http.StripPrefix("/", fileserver))
-	//http.Handle("/", fileserver)
 	fmt.Print("Starting web server at 8080\n")
 	log.Fatal(http.ListenAndServe("0.0.0.0:8080", r))
 

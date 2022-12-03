@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
-	"os"
+
+	"github.com/aanand01762/file-store/pkg/libs"
 )
 
 func AddFile(w http.ResponseWriter, r *http.Request) {
@@ -28,24 +29,16 @@ func AddFile(w http.ResponseWriter, r *http.Request) {
 		}
 		defer f.Close()
 
-		out, err := os.Create("./store-files/" + file.Filename)
+		byteContainer, err := ioutil.ReadAll(f)
 		if err != nil {
 			fmt.Fprintln(w, err)
 			return
 		}
+		hash := libs.HashFileContent(byteContainer)
+		fmt.Fprintf(w, hash+"\n")
 
-		defer out.Close()
-		if err != nil {
-			fmt.Fprintf(w, "Unable to create the file for writing. Check your write access privilege")
-			return
-		}
-
-		_, err = io.Copy(out, f) // file not files[i] !
-
-		if err != nil {
-			fmt.Fprintln(w, err)
-			return
-		}
+		filename := "./store-files/" + file.Filename
+		libs.WriteToStore(filename, byteContainer, w)
 
 		fmt.Fprintf(w, "Files uploaded successfully : ")
 		fmt.Fprintf(w, file.Filename+"\n")
