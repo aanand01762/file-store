@@ -1,6 +1,9 @@
 #  File store application
 
-## http server is used as store and client utility is used to update the files on the server
+### http server is used as store and client utility is used to update the files on the server
+
+### Design Diagram
+<img width="1047" alt="file-store" src="https://user-images.githubusercontent.com/45117013/205503702-a672a376-fac2-4132-821a-e2df312827c4.png">
 
 #### How to run the server application
 ```
@@ -148,17 +151,41 @@ Use " [command] --help" for more information about a command.
 ## Add files using client 
 ```
 % ./store add ~/a ~/a.py ~/aman_k8s_config.yaml 
-Using config file: /Users/akumar32/personal-git/file-store/client/config/config.yaml
+Using config file: ../file-store/client/config/config.yaml
 [{"filename":"a","msg":"Files uploaded successfully: a"},{"filename":"a.py","msg":"Files uploaded successfully: a.py"},{"filename":"aman_k8s_config.yaml","msg":"Files uploaded successfully: aman_k8s_config.yaml"}]
 ```
 ## Remove files using client
 ```
 % ./store rm a aman_k8s_config.yaml b 
-Using config file: /Users/akumar32/personal-git/file-store/client/config/config.yaml
+Using config file: ../file-store/client/config/config.yaml
 a removed successfully
 
 aman_k8s_config.yaml removed successfully
 
 b removed successfully
 ```
-
+## List files using client
+```
+akumar32@akumar32XMD6M client % ./store ls                                   
+Using config file: ../file-store/client/config/config.yaml
+a a.py aman_k8s_config.yaml 
+```
+## Get count of words in all files using client
+```
+% ./store wc
+Using config file: ../file-store/client/config/config.yaml
+228
+```
+##  Update the file on server using client
+* If file exist with same name and different content it will updated with uploaded file
+```
+client % ./store update  ~/personal-git/test/a.py 
+Using config file: ../file-store/client/config/config.yaml
+Updated the content of the file 'a.py' with latest value
+```
+* If file exists with same content type but different name it will be replaced with uploaded file
+```
+client % ./store update  ~/personal-git/test/b   
+Using config file: ../file-store/client/config/config.yaml
+Changed file name from: 'a.py' to new file name: 'b' because both files had same content
+```
