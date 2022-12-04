@@ -106,7 +106,6 @@ func DeleteFile(w http.ResponseWriter, r *http.Request) {
 	isExist, _ := libs.CheckIfFileExists(name, "")
 	if isExist {
 		hash := libs.GetHashOfFile(name)
-		fmt.Println(hash)
 		if hash == "" {
 			fmt.Fprintln(w, "Could not find the file, try updating file")
 			return
@@ -132,11 +131,13 @@ func GetFiles(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(filenames)
 }
 
-/*
-
 func GetWordCounts(w http.ResponseWriter, r *http.Request) {
-
+	dir := "./store-files/"
+	sum := libs.GetAllWordCount(dir, w)
+	json.NewEncoder(w).Encode(sum)
 }
+
+/*
 func GetFrequency(w http.ResponseWriter, r *http.Request) {
 
 }
