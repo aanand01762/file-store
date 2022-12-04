@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // rmCmd represents the rm command
@@ -15,12 +16,27 @@ var rmCmd = &cobra.Command{
 	Short: "store rm file.txt",
 	Long:  "store rm file.txt remove file.txt from store",
 	Run: func(cmd *cobra.Command, args []string) {
-		removeFiles(args)
+		host, _ := cmd.Flags().GetString("host")
+		port, _ := cmd.Flags().GetString("port")
+		removeFiles(host, port, args)
 	},
 }
 
-func removeFiles(args []string) {
-	url := "http://localhost:8080/store/delete"
+func removeFiles(host string, port string, args []string) {
+
+	if host == "" {
+		host = viper.GetString("HOST")
+	}
+	if port == "" {
+		port = viper.GetString("PORT")
+	}
+
+	if len(args) == 0 {
+		fmt.Println("File name can not be empty")
+		return
+	}
+
+	url := "http://" + host + ":" + port + "/store/delete"
 	method := "DELETE"
 	for _, filename := range args {
 
@@ -52,4 +68,6 @@ func removeFiles(args []string) {
 
 func init() {
 	rootCmd.AddCommand(rmCmd)
+	rmCmd.PersistentFlags().String("host", "", "File server hostname/IP")
+	rmCmd.PersistentFlags().String("port", "", "File server Port number")
 }

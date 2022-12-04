@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // addCmd represents the add command
@@ -22,13 +23,26 @@ var addCmd = &cobra.Command{
 	current path to the file store. Add command should 
 	fail if the file already exists in the server.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		uploadfiles(args)
+		host, _ := cmd.Flags().GetString("host")
+		port, _ := cmd.Flags().GetString("port")
+		uploadfiles(host, port, args)
+
 	},
 }
 
-func uploadfiles(args []string) {
+func uploadfiles(host string, port string, args []string) {
+	if host == "" {
+		host = viper.GetString("HOST")
+	}
+	if port == "" {
+		port = viper.GetString("PORT")
+	}
+	if len(args) == 0 {
+		fmt.Println("File name can not be empty")
+		return
+	}
 
-	url := "http://localhost:8080/store/add"
+	url := "http://" + host + ":" + port + "/store/add"
 	method := "POST"
 
 	payload := &bytes.Buffer{}
@@ -88,5 +102,6 @@ func uploadfiles(args []string) {
 
 func init() {
 	rootCmd.AddCommand(addCmd)
-
+	addCmd.PersistentFlags().String("host", "", "File server hostname/IP")
+	addCmd.PersistentFlags().String("port", "", "File server Port number")
 }

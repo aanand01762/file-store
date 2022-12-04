@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // updateCmd represents the update command
@@ -21,15 +22,27 @@ var updateCmd = &cobra.Command{
 	file.txt in server with the local file.txt or 
 	create a new file.txt in server if it is absent.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		updateFile(args)
+		host, _ := cmd.Flags().GetString("host")
+		port, _ := cmd.Flags().GetString("port")
+		updateFile(host, port, args)
 	},
 }
 
-func updateFile(args []string) {
-	url := "http://localhost:8080/store/update"
-	method := "PUT"
+func updateFile(host string, port string, args []string) {
+	if host == "" {
+		host = viper.GetString("HOST")
+	}
+	if port == "" {
+		port = viper.GetString("PORT")
+	}
 
-	if len(args) > 1 {
+	url := "http://" + host + ":" + port + "/store/update"
+	method := "PUT"
+	n := len(args)
+	if n == 0 {
+		fmt.Println("File name can not be empty")
+		return
+	} else if n > 1 {
 		fmt.Println("Passing multiple files args not supported")
 		return
 	}
@@ -87,4 +100,6 @@ func updateFile(args []string) {
 
 func init() {
 	rootCmd.AddCommand(updateCmd)
+	updateCmd.PersistentFlags().String("host", "", "File server hostname/IP")
+	updateCmd.PersistentFlags().String("port", "", "File server Port number")
 }
