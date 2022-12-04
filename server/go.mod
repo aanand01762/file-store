@@ -1,4 +1,4 @@
-module github.com/aanand01762/file-store
+module github.com/aanand01762/file-store/server
 
 go 1.19
 

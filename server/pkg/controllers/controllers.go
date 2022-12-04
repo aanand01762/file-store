@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/aanand01762/file-store/pkg/libs"
-	"github.com/aanand01762/file-store/pkg/utils"
+	"github.com/aanand01762/file-store/server/pkg/libs"
+	"github.com/aanand01762/file-store/server/pkg/utils"
 )
 
 type uploadResult struct {

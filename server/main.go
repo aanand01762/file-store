@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/aanand01762/file-store/pkg/routes"
+	"github.com/aanand01762/file-store/server/pkg/routes"
 	"github.com/gorilla/mux"
 )
 

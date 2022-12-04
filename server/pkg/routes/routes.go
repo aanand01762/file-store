@@ -3,7 +3,7 @@ package routes
 import (
 	"github.com/gorilla/mux"
 
-	"github.com/aanand01762/file-store/pkg/controllers"
+	"github.com/aanand01762/file-store/server/pkg/controllers"
 )
 
 var RegisterFileStoreRoutes = func(router *mux.Router) {
