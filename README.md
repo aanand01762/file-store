@@ -3,7 +3,7 @@
 ### http server is used as store and client utility is used to update the files on the server
 
 ### Design Diagram
-<img width="1047" alt="file-store" src="https://user-images.githubusercontent.com/45117013/205503702-a672a376-fac2-4132-821a-e2df312827c4.png">
+<img width="973" alt="file-store" src="https://user-images.githubusercontent.com/45117013/205504584-6ed87fcf-a180-446c-aa62-8d0eb695ff4f.png">
 
 #### How to run the server application
 ```
