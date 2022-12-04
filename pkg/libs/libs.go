@@ -27,6 +27,14 @@ func CheckIfFileExists(filename string, hash string) (bool, string) {
 	return false, ""
 }
 
+func GetHashOfFile(filename string) string {
+	if _, ok := name_with_hash[filename]; ok {
+		return name_with_hash[string(filename)]
+	} else {
+		return ""
+	}
+}
+
 func WriteToStore(name string, hash string, fileContent []byte, w http.ResponseWriter) {
 	filename := "./store-files/" + name
 	out, err := os.Create(filename)
@@ -48,36 +56,32 @@ func WriteToStore(name string, hash string, fileContent []byte, w http.ResponseW
 		return
 	}
 }
+func RemoveFile(filename string, hash string, w http.ResponseWriter) {
+	path := "./store-files/" + filename
+	err := os.Remove(path)
+	if err != nil {
+		fmt.Fprintln(w, err)
+		return
+	}
+	delete(name_with_hash, filename)
+	delete(hash_with_name, hash)
+
+}
 func ReplaceInStore(name string, hash string, fileContent []byte, w http.ResponseWriter) {
 	var returnMsg string
 
 	//if there is a similar file with same name, remove that file
 	if _, isFile := name_with_hash[name]; isFile {
 		mapped_hash := name_with_hash[name]
-		path := "./store-files/" + name
-		err := os.Remove(path)
-		if err != nil {
-			fmt.Fprintln(w, err)
-			return
-		}
-		delete(name_with_hash, name)
-		delete(hash_with_name, mapped_hash)
+		RemoveFile(name, mapped_hash, w)
 		returnMsg = ("Updated the content of the file '" + name +
 			"' with latest value")
 
 		//Else if there is a similar file with same content, remove that file
 	} else if _, isHash := hash_with_name[hash]; isHash {
 		mapped_name := hash_with_name[hash]
-		path := "./store-files/" + mapped_name
-		err := os.Remove(path)
-		if err != nil {
-			fmt.Fprintln(w, err)
-			return
-		}
-
-		delete(hash_with_name, hash)
-		delete(name_with_hash, mapped_name)
-		returnMsg = ("Changed the file name from: '" + mapped_name +
+		RemoveFile(mapped_name, hash, w)
+		returnMsg = ("Changed file name from: '" + mapped_name +
 			"' to new file name: '" + name +
 			"' because both files had same content")
 	}

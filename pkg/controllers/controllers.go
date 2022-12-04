@@ -7,15 +7,17 @@ import (
 	"net/http"
 
 	"github.com/aanand01762/file-store/pkg/libs"
+	"github.com/aanand01762/file-store/pkg/utils"
 )
 
-type Error struct {
-	Error string `json:"Error"`
+type uploadResult struct {
+	Filname string `json:"filename"`
+	Msg     string `json:"msg"`
 }
 
-/*type fname struct {
-	name string `json:"filename"`
-}*/
+type fname struct {
+	Name string `json:"filename"`
+}
 
 func JSONError(w http.ResponseWriter, err interface{}, code int) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -25,6 +27,8 @@ func JSONError(w http.ResponseWriter, err interface{}, code int) {
 }
 
 func AddFile(w http.ResponseWriter, r *http.Request) {
+	var result []interface{}
+	var isPartialSucess bool
 	err := r.ParseMultipartForm(200000) // grab the multipart form
 	if err != nil {
 		fmt.Fprintln(w, err)
@@ -56,15 +60,24 @@ func AddFile(w http.ResponseWriter, r *http.Request) {
 
 		if !isExist {
 			libs.WriteToStore(file.Filename, hash, byteContainer, w)
-			fmt.Fprintf(w, "Files uploaded successfully : ")
-			fmt.Fprintf(w, file.Filename+"\n")
+			out := uploadResult{
+				file.Filename,
+				"Files uploaded successfully: " + file.Filename}
+			result = append(result, out)
 		} else {
-			err := Error{
+			out := uploadResult{
+				file.Filename,
 				"file: '" + inMemFilename + "' with same content aleady exists"}
-			JSONError(w, err, 500)
+			result = append(result, out)
+			isPartialSucess = true
 		}
-
 	}
+	if isPartialSucess {
+		http.Error(w, "Partial Success", http.StatusPartialContent)
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	json.NewEncoder(w).Encode(result)
+
 }
 
 func UpdateFile(w http.ResponseWriter, r *http.Request) {
@@ -85,19 +98,41 @@ func UpdateFile(w http.ResponseWriter, r *http.Request) {
 	libs.ReplaceInStore(header.Filename, hash, byteContainer, w)
 }
 
-/*
 func DeleteFile(w http.ResponseWriter, r *http.Request) {
 	filename := &fname{}
 	utils.ParseBody(r, filename)
-	name := (*filename).name
+	name := (*filename).Name
 
 	isExist, _ := libs.CheckIfFileExists(name, "")
+	if isExist {
+		hash := libs.GetHashOfFile(name)
+		fmt.Println(hash)
+		if hash == "" {
+			fmt.Fprintln(w, "Could not find the file, try updating file")
+			return
+		}
+		libs.RemoveFile(name, hash, w)
+		fmt.Fprintf(w, name+" removed successfully\n")
+	} else {
+		fmt.Fprintln(w, name+" does not exists in the store")
 	}
-
+}
 
 func GetFiles(w http.ResponseWriter, r *http.Request) {
+	filenames := []string{}
+	files, err := ioutil.ReadDir("./store-files/")
+	if err != nil {
+		fmt.Fprintln(w, err)
+		return
+	}
 
+	for _, file := range files {
+		filenames = append(filenames, file.Name())
+	}
+	json.NewEncoder(w).Encode(filenames)
 }
+
+/*
 
 func GetWordCounts(w http.ResponseWriter, r *http.Request) {
 
