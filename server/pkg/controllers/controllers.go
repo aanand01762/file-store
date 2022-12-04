@@ -73,7 +73,7 @@ func AddFile(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if isPartialSucess {
-		http.Error(w, "Partial Success", http.StatusPartialContent)
+		w.WriteHeader(http.StatusPartialContent)
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(result)
