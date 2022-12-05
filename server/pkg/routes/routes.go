@@ -14,6 +14,7 @@ var RegisterFileStoreRoutes = func(router *mux.Router) {
 	router.HandleFunc("/store/delete", controllers.DeleteFile).Methods("DELETE")
 	router.HandleFunc("/store/files", controllers.GetFiles)
 	router.HandleFunc("/store/word-count", controllers.GetWordCounts)
+	router.HandleFunc("/store/frequency", controllers.GetFrequency).Methods("GET")
 
 	/*
 

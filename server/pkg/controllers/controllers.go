@@ -19,6 +19,11 @@ type fname struct {
 	Name string `json:"filename"`
 }
 
+type freqWord struct {
+	Order string `json:"order"`
+	Limit int    `json:"limit"`
+}
+
 func JSONError(w http.ResponseWriter, err interface{}, code int) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
@@ -137,8 +142,10 @@ func GetWordCounts(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(sum)
 }
 
-/*
 func GetFrequency(w http.ResponseWriter, r *http.Request) {
-
+	freqBody := &freqWord{}
+	utils.ParseBody(r, freqBody)
+	limit := (*freqBody).Limit
+	order := (*freqBody).Order
+	libs.GetFrequentWords(order, limit, w)
 }
-*/

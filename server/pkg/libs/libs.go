@@ -9,13 +9,14 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 )
 
 var hash_with_name = map[string]string{}
 var name_with_hash = map[string]string{}
 var words_with_count = map[string]int{}
-var count_with_word = map[int]string{}
+var count_with_word = map[int][]string{}
 
 func HashFileContent(file []byte) string {
 	h := sha256.New()
@@ -167,10 +168,10 @@ func UpdateWordsWithCounts(dir string, w http.ResponseWriter) {
 }
 
 func UpdateFreqWithWord(dir string, w http.ResponseWriter) {
-	count_with_word = map[int]string{}
+	count_with_word = map[int][]string{}
 	UpdateWordsWithCounts(dir, w)
 	for key, val := range words_with_count {
-		count_with_word[val] = key
+		count_with_word[val] = append(count_with_word[val], key)
 	}
 
 }
@@ -187,6 +188,55 @@ func GetWordsWithCounts() map[string]int {
 	return words_with_count
 }
 
-func GetFreqwithCounts() map[int]string {
+func GetFreqwithCounts() map[int][]string {
 	return count_with_word
+}
+
+func GetFrequentWords(order string, limit int, w http.ResponseWriter) {
+	if order != "dsc" && order != "asc" {
+		msg := "Please pass the right value in order field, \"asc\" or \"dsc\""
+		fmt.Fprintln(w, msg)
+		log.Println(msg)
+		return
+	}
+	frequent_list := []int{}
+	for freq, _ := range count_with_word {
+		frequent_list = append(frequent_list, freq)
+	}
+
+	sort.Ints(frequent_list)
+	n := len(frequent_list) - 1
+
+	res := ""
+	if order == "dsc" {
+		for n >= 0 && limit > 0 {
+			words := count_with_word[frequent_list[n]]
+			n--
+
+			for _, word := range words {
+				if limit < 0 {
+					break
+				}
+				res = res + word + " "
+
+				limit--
+			}
+		}
+	} else if order == "asc" {
+		i := 0
+		j := 0
+		for (i < limit-1) && j < n {
+			words := count_with_word[frequent_list[j]]
+			j++
+
+			for _, word := range words {
+				if i > limit-1 {
+					break
+				}
+				res = res + word + " "
+				i++
+			}
+		}
+	}
+	fmt.Fprintf(w, res)
 }
