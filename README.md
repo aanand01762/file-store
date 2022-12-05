@@ -32,8 +32,9 @@ url-shortner % docker images
 REPOSITORY     TAG       IMAGE ID       CREATED        SIZE
 file-store  v1        0e67cb6971c4   16 hours ago   310MB
 ```
-* Run the container using bind mount, below command will mount the store-files  directory inside the container to the current working directory. Thus user can access the server-files  where files are stored and served. 
+* Run the container using bind mount, below command will mount the store-files  directory inside the container to the store-files inside current working directory. Thus user can access the server-files  where files are stored and served. 
 ```
+mkdir store-files
 docker run -d -it --name <container_name> -p <localhost port>:8080 --mount type=bind,source="$(pwd)",target=/app/store-files  file-store:v1
 ```
 
@@ -208,7 +209,7 @@ Changed file name from: 'a.py' to new file name: 'b' because both files had same
 ```
 
 ##  List most frequent or least frequent words in all files on the server. 
-* Pass --limit flag to number of words, --order flag with asc value for least frequent and dsc for most frequent words. Default values are limit = 10 and order = dsc.
+* Pass --limit flag for number of words, --order flag with asc value for least frequent and dsc for most frequent words. Default values for limit  and order are 10 and "dsc" respectively.
 ```
 akumar32@akumar32XMD6M client % ./store freq-words --order asc --limit 15  
 Using config file: ../file-store/client/config/config.yaml
