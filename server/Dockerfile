@@ -16,4 +16,4 @@ RUN go build
 EXPOSE 8080
 
 # Run the executable
-CMD ["./file-store"]
+CMD ["./server"]
