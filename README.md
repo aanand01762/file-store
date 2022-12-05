@@ -107,6 +107,23 @@ docker run -d -it --name <container_name> -p <localhost port>:8080 --mount type=
 * **Data Params**
    NONE
    
+#### Word frequency
+---
+  Get most frequent or least frequent words.
+* **URL:**
+  /store/frequency
+* **Method:**
+  `GET`
+  
+*  **URL Params**
+    None
+* **Data Params**
+   **Required:**
+    `{
+    "order": "dsc|asc",
+    "limit": <number>
+    }`
+   
 # How to run the client application
 ```
 git clone https://github.com/aanand01762/file-store.git
@@ -188,4 +205,12 @@ Updated the content of the file 'a.py' with latest value
 client % ./store update  ~/personal-git/test/b   
 Using config file: ../file-store/client/config/config.yaml
 Changed file name from: 'a.py' to new file name: 'b' because both files had same content
+```
+
+##  List most frequent or least frequent words in all files on the server. 
+* Pass --limit flag to number of words, --order flag with asc value for least frequent and dsc for most frequent words. Default values are limit = 10 and order = dsc.
+```
+akumar32@akumar32XMD6M client % ./store freq-words --order asc --limit 15  
+Using config file: ../file-store/client/config/config.yaml
+waitforqueuestodraintask always headersheaders server initedgeclientcachetask validatesequentialkeystask response verifyfalse latestconfendtask datapayload printresponsetext initservercachetask initserverregiontask authorization config 
 ```
