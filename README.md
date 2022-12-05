@@ -113,7 +113,7 @@ git clone https://github.com/aanand01762/file-store.git
 cd file-store/client
 cd config
 ```
-* Update the server hostname and port number, default values are localhost and 8080 respectively.
+* Update the server hostname and port number in the config.yaml or create new file, default values are localhost and 8080 respectively.
 ```
 HOST: <hostname>
 PORT: <port number>
