@@ -217,7 +217,7 @@ waitforqueuestodraintask always headersheaders server initedgeclientcachetask va
 ```
 
 # How to run the application inside kubernetes cluster
-* Update  the hostPath field in the deployment.yaml to mount the the host 
+* Update  the hostPath field in the deployment.yaml(inside server folder) to mount the the host 
 ```
     hostPath:
           path: <host path>
@@ -228,7 +228,7 @@ waitforqueuestodraintask always headersheaders server initedgeclientcachetask va
 cd sever
 kubectl apply -f deployment.yaml
 ```
-* Now create the Service of type NodePort. By default, will service will use 30000 port of the host node, but user can always update and use accordingly.
+* Now create the service of type NodePort. By default service will use 30000 port of the host node, but user can always update and use with different values.
 ```
 kubectl apply -f serive.yaml
 ```
