@@ -26,5 +26,5 @@ spec:
       volumes:
       - name: test-volume
         hostPath:
-          path: /Users/akumar32/data
+          path: <host path>
           type: DirectoryOrCreate
