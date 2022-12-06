@@ -216,7 +216,7 @@ Using config file: ../file-store/client/config/config.yaml
 waitforqueuestodraintask always headersheaders server initedgeclientcachetask validatesequentialkeystask response verifyfalse latestconfendtask datapayload printresponsetext initservercachetask initserverregiontask authorization config 
 ```
 
-#### How to run the application inside kubernetes cluster
+# How to run the application inside kubernetes cluster
 * Update  the hostPath field in the deployment.yaml to mount the the host and apply to run the application as container inside k8s pod.
 ```
 cd sever
