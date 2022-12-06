@@ -215,3 +215,14 @@ akumar32@akumar32XMD6M client % ./store freq-words --order asc --limit 15
 Using config file: ../file-store/client/config/config.yaml
 waitforqueuestodraintask always headersheaders server initedgeclientcachetask validatesequentialkeystask response verifyfalse latestconfendtask datapayload printresponsetext initservercachetask initserverregiontask authorization config 
 ```
+
+#### How to run the application inside kubernetes cluster
+* Update  the hostPath field in the deployment.yaml to mount the the host and apply to run the application as container inside k8s pod.
+```
+cd sever
+kubectl apply -f deployment.yaml
+```
+* Now create the Service of type NodePort. By default, will service will use 30000 port of the host node, but user can always update and use accordingly.
+```
+kubectl apply -f serive.yaml
+```
