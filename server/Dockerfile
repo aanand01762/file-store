@@ -6,7 +6,6 @@ WORKDIR /app
 RUN mkdir store-files
 RUN mkdir pkg
 COPY pkg pkg 
-COPY store-files store-files
 COPY go.mod go.sum main.go ./
 
 # Build the code 
