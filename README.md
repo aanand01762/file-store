@@ -217,7 +217,13 @@ waitforqueuestodraintask always headersheaders server initedgeclientcachetask va
 ```
 
 # How to run the application inside kubernetes cluster
-* Update  the hostPath field in the deployment.yaml to mount the the host and apply to run the application as container inside k8s pod.
+* Update  the hostPath field in the deployment.yaml to mount the the host 
+```
+    hostPath:
+          path: <host path>
+          type: DirectoryOrCreate
+```
+* Apply to run the application as container inside k8s pod.
 ```
 cd sever
 kubectl apply -f deployment.yaml
