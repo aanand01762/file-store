@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: file-store
+  name: file-store
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: file-store
+  template:
+    metadata:
+      labels:
+        app: file-store
+    spec:
+      containers:
+      - image: docker.io/aanand01762/file-store:v1
+        name: file-store
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /app/store-files
+          name: test-volume
+      volumes:
+      - name: test-volume
+        hostPath:
+          path: /Users/akumar32/data
+          type: DirectoryOrCreate
